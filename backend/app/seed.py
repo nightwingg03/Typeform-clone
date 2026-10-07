@@ -95,12 +95,17 @@ def _seed_customer_feedback(db: Session) -> None:
             ("Anything else?", "Ok"),
         ],
     ]
-    for rows in submissions:
+    for i, rows in enumerate(submissions):
         answers = [
             AnswerSubmit(question_id=by_title[title], value=value)
             for title, value in rows
         ]
-        responses_service.submit_response(db, published.slug, answers)
+        responses_service.submit_response(
+            db,
+            published.slug,
+            answers,
+            idempotency_key=f"seed-customer-feedback-{i}",
+        )
 
 
 def _seed_event_registration(db: Session) -> None:
@@ -154,12 +159,17 @@ def _seed_event_registration(db: Session) -> None:
             ("Party size", 1),
         ],
     ]
-    for rows in submissions:
+    for i, rows in enumerate(submissions):
         answers = [
             AnswerSubmit(question_id=by_title[title], value=value)
             for title, value in rows
         ]
-        responses_service.submit_response(db, published.slug, answers)
+        responses_service.submit_response(
+            db,
+            published.slug,
+            answers,
+            idempotency_key=f"seed-event-registration-{i}",
+        )
 
 
 def _seed_product_survey_draft(db: Session) -> None:
